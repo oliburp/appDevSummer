@@ -4,6 +4,8 @@ export 'package:firebase_auth/firebase_auth.dart';
 export 'package:fluttertoast/fluttertoast.dart';
 export 'package:font_awesome_flutter/font_awesome_flutter.dart';
 export 'package:shared_preferences/shared_preferences.dart';
+export '/firebase_options.dart';
+export '/firebase/firebase_auth_implement.dart';
 export '/pages/homepage.dart';
 export '/pages/splash.dart';
 export '/pages/login.dart';

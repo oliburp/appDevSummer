@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import '/import/export.dart';
 
 class MyLogin extends StatefulWidget {
@@ -10,15 +8,45 @@ class MyLogin extends StatefulWidget {
 }
 
 class _MyLoginState extends State<MyLogin> {
+  bool loading = false;
   final formkey = GlobalKey<FormState>();
   final TextEditingController loginEmailController = TextEditingController();
   final TextEditingController loginPasswordController = TextEditingController();
+  final FirebaseAuthService _auth = FirebaseAuthService();
 
   @override
   void dispose() {
     loginEmailController.dispose();
     loginPasswordController.dispose();
     super.dispose();
+  }
+
+  void _logIn() async {
+    if (formkey.currentState!.validate()) {
+      setState(() {
+        loading = true;
+      });
+
+      String email = loginEmailController.text;
+      String password = loginPasswordController.text;
+
+      User? user = await _auth.logInEmailPassword(email, password);
+
+      setState(() {
+        loading = false;
+      });
+
+      if (user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyHomePage(
+              email: loginEmailController.text,
+            ),
+          ),
+        );
+      }
+    }
   }
 
   void submit() {
@@ -33,7 +61,7 @@ class _MyLoginState extends State<MyLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 24, 28, 24),
+      backgroundColor: const Color.fromARGB(255, 24, 28, 24),
       appBar: AppBar(
         title: const Text(
           'Patogtog',
@@ -54,24 +82,24 @@ class _MyLoginState extends State<MyLogin> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Login',
                   style: TextStyle(
                       fontSize: 32,
                       color: Color.fromARGB(255, 5, 236, 143),
                       fontWeight: FontWeight.bold),
                 ),
-                Text(
+                const Text(
                   'Good to see you back!',
                   style: TextStyle(color: Color.fromARGB(255, 5, 236, 143)),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 MyEmail(
                   labelText: 'Email',
                   preIcon: Icons.email,
                   controller: loginEmailController,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 MyPassword(
                     labelText: 'Password',
                     controller: loginPasswordController,
@@ -81,11 +109,42 @@ class _MyLoginState extends State<MyLogin> {
                       }
                       return null;
                     }),
-                SizedBox(height: 20),
-                MyButton(
-                  text: 'Login',
-                  height: 40,
-                  onTap: submit,
+                const SizedBox(height: 20),
+                loading
+                    ? const CircularProgressIndicator(
+                        color: Color.fromARGB(255, 5, 236, 143))
+                    : MyButton(
+                        text: 'Login',
+                        height: 50,
+                        onTap: submit,
+                      ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Doesn\'t have an account? ',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MySignup(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Sign Up',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 5, 236, 143),
+                            decoration: TextDecoration.underline),
+                      ),
+                    )
+                  ],
                 ),
               ],
             ),
