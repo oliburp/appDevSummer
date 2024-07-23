@@ -17,8 +17,36 @@ class _SplashScreenState extends State<SplashScreen> {
             builder: (context) => const MyLogin(),
           ),
           (route) => false);
+      getPref();
     });
     super.initState();
+  }
+
+  Future<void> getPref() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final loginEmail = prefs.getString('loginEmail');
+    final signupEmail = prefs.getString('signupEmail');
+    if (loginEmail != null && mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyHomePage(
+            email: loginEmail,
+          ),
+        ),
+      );
+      debugPrint(loginEmail);
+    } else if (signupEmail != null && mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyHomePage(
+            email: signupEmail,
+          ),
+        ),
+      );
+      debugPrint(signupEmail);
+    }
   }
 
   @override
@@ -28,7 +56,10 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
           child: Text(
         'Patogtog',
-        style: TextStyle(color: Color.fromARGB(255, 5, 236, 143), fontSize: 32, fontWeight: FontWeight.bold),
+        style: TextStyle(
+            color: Color.fromARGB(255, 5, 236, 143),
+            fontSize: 32,
+            fontWeight: FontWeight.bold),
       )),
     );
   }

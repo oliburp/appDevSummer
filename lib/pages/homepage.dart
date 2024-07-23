@@ -2,6 +2,7 @@ import '/import/export.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.email});
+
   final String email;
 
   @override
@@ -9,14 +10,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  void signOut() {
+  int currentPageIndex = 0;
+  Future<void> signOut() async {
     FirebaseAuth.instance.signOut();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const MyLogin(),
-      ),
-    );
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('loginEmail');
+    await prefs.remove('signupEmail');
+    showToast('Logged out successfully');
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MyLogin(),
+        ),
+      );
+    }
   }
 
   @override
@@ -34,10 +42,47 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.transparent,
         centerTitle: true,
       ),
-      body: MyButton(
-        height: 40,
-        text: 'Logout',
-        onTap: signOut,
+      body: Column(
+        children: [
+          MyButton(
+            height: 40,
+            text: 'Logout',
+            onTap: signOut,
+          ),
+          Text(
+            widget.email,
+            style: const TextStyle(color: Color.fromARGB(255, 5, 236, 143)),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBarTheme(
+        data: const BottomNavigationBarThemeData(
+          backgroundColor: Colors.transparent,
+          selectedLabelStyle: TextStyle(color:  Color.fromARGB(255, 5, 236, 143)),
+          selectedItemColor: Color.fromARGB(255, 5, 236, 143)
+        ),
+        child: NavigationBar(
+          onDestinationSelected: (int index) {
+            setState(() {
+              currentPageIndex = index;
+            });
+          },
+          selectedIndex: currentPageIndex,
+          destinations: const [
+            NavigationDestination(
+              icon: Icon(Icons.home_filled),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.favorite),
+              label: 'Favorites',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.person),
+              label: 'Me',
+            ),
+          ],
+        ),
       ),
     );
   }

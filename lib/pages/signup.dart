@@ -36,21 +36,32 @@ class _MySignupState extends State<MySignup> {
 
       User? user = await _auth.signUpEmailPassword(email, password);
 
+      showToast('Registration Successful');
+
       setState(() {
         loading = false;
       });
 
       if (user != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MyHomePage(
-              email: signupEmailController.text,
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('signupEmail', user.email.toString());
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MyHomePage(
+                email: signupEmailController.text,
+              ),
             ),
-          ),
-        );
+          );
+        }
       }
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override

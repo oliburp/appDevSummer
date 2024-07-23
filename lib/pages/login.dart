@@ -32,21 +32,30 @@ class _MyLoginState extends State<MyLogin> {
 
       User? user = await _auth.logInEmailPassword(email, password);
 
+      showToast('Login Successful');
+
       setState(() {
         loading = false;
       });
 
       if (user != null) {
-        Navigator.pushReplacement(
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('loginEmail', user.email.toString());
+        if (mounted) {Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => MyHomePage(
               email: loginEmailController.text,
             ),
           ),
-        );
+        );}
       }
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
