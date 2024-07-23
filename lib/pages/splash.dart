@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
           child: Text(
         'Patogtog',
-        style: TextStyle(color: Color.fromARGB(255, 5, 236, 143)),
+        style: TextStyle(color: Color.fromARGB(255, 5, 236, 143), fontSize: 32, fontWeight: FontWeight.bold),
       )),
     );
   }

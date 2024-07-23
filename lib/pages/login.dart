@@ -21,7 +21,7 @@ class _MyLoginState extends State<MyLogin> {
     super.dispose();
   }
 
-  void _logIn() async {
+  void submit() async {
     if (formkey.currentState!.validate()) {
       setState(() {
         loading = true;
@@ -49,15 +49,6 @@ class _MyLoginState extends State<MyLogin> {
     }
   }
 
-  void submit() {
-    if (formkey.currentState!.validate()) {
-      if (loginEmailController.text.isNotEmpty &&
-          loginPasswordController.text.isNotEmpty) {
-        showToast('ok');
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,9 +66,9 @@ class _MyLoginState extends State<MyLogin> {
       ),
       body: Form(
         key: formkey,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(50),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(50, 50, 50, 0),
+          child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,14 +101,16 @@ class _MyLoginState extends State<MyLogin> {
                       return null;
                     }),
                 const SizedBox(height: 20),
-                loading
-                    ? const CircularProgressIndicator(
-                        color: Color.fromARGB(255, 5, 236, 143))
-                    : MyButton(
-                        text: 'Login',
-                        height: 50,
-                        onTap: submit,
-                      ),
+                Center(
+                  child: loading
+                      ? const CircularProgressIndicator(
+                          color: Color.fromARGB(255, 5, 236, 143))
+                      : MyButton(
+                          text: 'Login',
+                          height: 50,
+                          onTap: submit,
+                        ),
+                ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

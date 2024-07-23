@@ -25,7 +25,7 @@ class _MySignupState extends State<MySignup> {
     super.dispose();
   }
 
-  void _signUp() async {
+  void submit() async {
     if (formkey.currentState!.validate()) {
       setState(() {
         loading = true;
@@ -53,15 +53,6 @@ class _MySignupState extends State<MySignup> {
     }
   }
 
-  void submit() {
-    if (formkey.currentState!.validate()) {
-      if (signupEmailController.text.isNotEmpty &&
-          signupPasswordController.text.isNotEmpty) {
-        showToast('ok');
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,9 +70,10 @@ class _MySignupState extends State<MySignup> {
       ),
       body: Form(
         key: formkey,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(50),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(50, 50, 50, 0),
+          child: SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -131,14 +123,16 @@ class _MySignupState extends State<MySignup> {
                       return null;
                     }),
                 const SizedBox(height: 20),
-                loading
-                    ? const CircularProgressIndicator(
-                        color: Color.fromARGB(255, 5, 236, 143))
-                    : MyButton(
-                        text: 'Register',
-                        height: 50,
-                        onTap: submit,
-                      ),
+                Center(
+                  child: loading
+                      ? const CircularProgressIndicator(
+                          color: Color.fromARGB(255, 5, 236, 143))
+                      : MyButton(
+                          text: 'Register',
+                          height: 50,
+                          onTap: submit,
+                        ),
+                ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
