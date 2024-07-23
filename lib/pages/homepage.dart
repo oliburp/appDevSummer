@@ -34,6 +34,11 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.transparent,
         centerTitle: true,
       ),
+      body: MyButton(
+        height: 40,
+        text: 'Logout',
+        onTap: signOut,
+      ),
     );
   }
 }
