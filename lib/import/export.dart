@@ -14,3 +14,5 @@ export '/widgets/widgets.dart';
 export '/pages/homepage/home.dart';
 export '/pages/homepage/favorite.dart';
 export '/pages/homepage/user.dart';
+export '/assets/songs.dart';
+export '/assets/assets.dart';

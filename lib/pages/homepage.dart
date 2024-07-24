@@ -35,8 +35,11 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBarTheme(
         data: const BottomNavigationBarThemeData(
           backgroundColor: Colors.transparent,
+          elevation: 0,
           selectedLabelStyle: TextStyle(color:  Color.fromARGB(255, 5, 236, 143)),
-          selectedItemColor: Color.fromARGB(255, 5, 236, 143)
+          selectedItemColor: Color.fromARGB(255, 5, 236, 143),
+          unselectedLabelStyle: TextStyle(color:  Color.fromARGB(149, 158, 163, 161)),
+          unselectedItemColor: Color.fromARGB(149, 158, 163, 161),
         ),
         child: BottomNavigationBar(
           onTap: (int index) {
