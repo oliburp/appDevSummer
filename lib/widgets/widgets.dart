@@ -157,3 +157,17 @@ class MyButton extends StatelessWidget {
     );
   }
 }
+
+class SharedPrefs {
+  static Future<void> saveFavorites(List<String> favorites) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final loginEmail = prefs.getString('loginEmail');
+    prefs.setStringList('favorites_$loginEmail', favorites);
+  }
+
+  static Future<List<String>> loadFavorites() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final loginEmail = prefs.getString('loginEmail');
+    return prefs.getStringList('favorites_$loginEmail') ?? [];
+  }
+}

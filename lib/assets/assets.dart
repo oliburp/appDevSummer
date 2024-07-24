@@ -25,6 +25,4 @@ final List<List> songList = [
     ],
   ];
 
-final List<List> favoriteList = [
-
-];
+List<List> favoriteList = [];
