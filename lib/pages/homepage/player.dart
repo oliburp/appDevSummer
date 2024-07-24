@@ -3,16 +3,12 @@ import '/import/export.dart';
 class MyPlayer extends StatefulWidget {
   const MyPlayer({
     Key? key,
-    required this.song,
-    required this.artist,
-    required this.img,
-    required this.route,
+    required this.songList,
+    required this.initialIndex,
   }) : super(key: key);
 
-  final String song;
-  final String artist;
-  final String img;
-  final String route;
+  final List<List> songList;
+  final int initialIndex;
 
   @override
   State<MyPlayer> createState() => _MyPlayerState();
@@ -23,11 +19,15 @@ class _MyPlayerState extends State<MyPlayer> {
   bool isPlaying = false;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
+  late int currentIndex;
 
   @override
   void initState() {
     super.initState();
     _audioPlayer = AudioPlayer();
+    currentIndex = widget.initialIndex;
+    _loadSong();
+
     _audioPlayer.onDurationChanged.listen((d) {
       setState(() {
         duration = d;
@@ -38,7 +38,9 @@ class _MyPlayerState extends State<MyPlayer> {
         position = p;
       });
     });
-    loadFavorites();
+    _audioPlayer.onPlayerComplete.listen((_) {
+      _nextTrack();
+    });
   }
 
   @override
@@ -47,46 +49,50 @@ class _MyPlayerState extends State<MyPlayer> {
     super.dispose();
   }
 
-  void playPause() async {
+  void _loadSong() async {
+    String songUrl = widget.songList[currentIndex][3];
+    await _audioPlayer.play(AssetSource(songUrl.substring(7)));
+    _playPause();
+  }
+
+  void _playPause() async {
     if (isPlaying) {
       await _audioPlayer.pause();
     } else {
-      await _audioPlayer.play(AssetSource(widget.route.substring(7)));
+      await _audioPlayer.resume();
     }
     setState(() {
       isPlaying = !isPlaying;
     });
   }
 
-  void stop() async {
-    await _audioPlayer.stop();
-    setState(() {
-      isPlaying = false;
-      position = Duration.zero;
-    });
-  }
-
-  void loadFavorites() async {
-    List<String> favorites = await SharedPrefs.loadFavorites();
-    setState(() {
-      favoriteList =
-          songList.where((song) => favorites.contains(song[0])).toList();
-    });
-  }
-
-  void toggleFavorite(String songTitle) async {
-    List<String> favorites = await SharedPrefs.loadFavorites();
-    if (favorites.contains(songTitle)) {
-      favorites.remove(songTitle);
-    } else {
-      favorites.add(songTitle);
+  void _nextTrack() {
+    if (currentIndex < widget.songList.length - 1) {
+      setState(() {
+        currentIndex = (currentIndex + 1) % widget.songList.length;
+      });
+      _loadSong();
+      _playPause();
     }
-    SharedPrefs.saveFavorites(favorites);
-    loadFavorites(); // Reload favorites to update the UI
+  }
+
+  void _previousTrack() {
+    if (currentIndex > 0) {
+      setState(() {
+        currentIndex = (currentIndex - 1) % widget.songList.length;
+      if (currentIndex < 0) {
+        currentIndex = widget.songList.length - 1;
+      }
+      });
+      _loadSong();
+      _playPause();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentSong = widget.songList[currentIndex];
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 24, 28, 24),
       appBar: AppBar(
@@ -126,15 +132,15 @@ class _MyPlayerState extends State<MyPlayer> {
                           bottomLeft: Radius.circular(4),
                           bottomRight: Radius.circular(4),
                         ),
-                        child: Image.asset(widget.img,
+                        child: Image.asset(currentSong[2],
                             width: double.infinity, fit: BoxFit.fill),
                       ),
                       ListTile(
-                        title: Text(widget.song,
+                        title: Text(currentSong[0],
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold)),
-                        subtitle: Text(widget.artist),
+                        subtitle: Text(currentSong[1]),
                       ),
                     ],
                   ),
@@ -147,7 +153,7 @@ class _MyPlayerState extends State<MyPlayer> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    formatTime(position),
+                    _formatTime(position),
                     style: const TextStyle(color: Colors.white),
                   ),
                   SliderTheme(
@@ -168,7 +174,7 @@ class _MyPlayerState extends State<MyPlayer> {
                     ),
                   ),
                   Text(
-                    formatTime(duration),
+                    _formatTime(duration),
                     style: const TextStyle(color: Colors.white),
                   ),
                 ],
@@ -180,21 +186,17 @@ class _MyPlayerState extends State<MyPlayer> {
                   MyPlayerButtons(
                     width: 70,
                     icon: Icons.skip_previous,
-                    onPressed: () {
-                      // Add functionality for skipping to the previous track
-                    },
+                    onPressed: _previousTrack,
                   ),
                   MyPlayerButtons(
                     width: 150,
                     icon: isPlaying ? Icons.pause : Icons.play_arrow,
-                    onPressed: playPause,
+                    onPressed: _playPause,
                   ),
                   MyPlayerButtons(
                     width: 70,
                     icon: Icons.skip_next,
-                    onPressed: () {
-                      // Add functionality for skipping to the next track
-                    },
+                    onPressed: _nextTrack,
                   ),
                 ],
               ),
@@ -205,7 +207,7 @@ class _MyPlayerState extends State<MyPlayer> {
     );
   }
 
-  String formatTime(Duration duration) {
+  String _formatTime(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final hours = twoDigits(duration.inHours);
     final minutes = twoDigits(duration.inMinutes.remainder(60));

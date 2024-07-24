@@ -70,11 +70,7 @@ class _MyFavoritesState extends State<MyFavorites> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => MyPlayer(
-                                song: song[0],
-                                artist: song[1],
-                                img: song[2],
-                                route: song[3])),
+                            builder: (context) => MyPlayer(initialIndex: index, songList: favoriteList,)),
                       );
                     },
                   ),
