@@ -37,46 +37,44 @@ class _MyHomeState extends State<MyHome> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: songList.length,
-          itemBuilder: (BuildContext context, int index) {
-            final song = songList[index];
-            final isFavorite = favoriteList.contains(song);
-
-            return Padding(
-              padding: const EdgeInsets.all(8),
-              child: ListTile(
-                title: Text(song[0],
-                    style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold)),
-                subtitle: Text(song[1],
-                    style: const TextStyle(
-                        color: Color.fromARGB(150, 255, 255, 255))),
-                leading: Image.asset(song[2]),
-                trailing: IconButton(
-                  onPressed: () {
-                    toggleFavorite(song[0]);
-                    favoriteList.add(songList[index]);
-                  },
-                  icon: Icon(
-                    isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite
-                        ? const Color.fromARGB(255, 5, 236, 143)
-                        : null,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MyPlayer(initialIndex: index,songList: songList,)),
-                  );
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: songList.length,
+        itemBuilder: (BuildContext context, int index) {
+          final song = songList[index];
+          final isFavorite = favoriteList.contains(song);
+    
+          return Padding(
+            padding: const EdgeInsets.all(8),
+            child: ListTile(
+              title: Text(song[0],
+                  style: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold)),
+              subtitle: Text(song[1],
+                  style: const TextStyle(
+                      color: Color.fromARGB(150, 255, 255, 255))),
+              leading: Image.asset(song[2]),
+              trailing: IconButton(
+                onPressed: () {
+                  toggleFavorite(song[0]);
+                  favoriteList.add(songList[index]);
                 },
+                icon: Icon(
+                  isFavorite ? Icons.favorite : Icons.favorite_border,
+                  color: isFavorite
+                      ? const Color.fromARGB(255, 5, 236, 143)
+                      : null,
+                ),
               ),
-            );
-          }),
-    );
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyPlayer(initialIndex: index,songList: songList,)),
+                );
+              },
+            ),
+          );
+        });
   }
 }
