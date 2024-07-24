@@ -69,24 +69,25 @@ class _MyPlayerState extends State<MyPlayer> {
   void _nextTrack() {
     if (currentIndex < widget.songList.length - 1) {
       setState(() {
-        currentIndex = (currentIndex + 1) % widget.songList.length;
+        currentIndex++;
       });
-      _loadSong();
-      _playPause();
+    } else {
+      currentIndex = 0;
     }
+    _loadSong();
+    _playPause();
   }
 
   void _previousTrack() {
     if (currentIndex > 0) {
       setState(() {
-        currentIndex = (currentIndex - 1) % widget.songList.length;
-      if (currentIndex < 0) {
-        currentIndex = widget.songList.length - 1;
-      }
+        currentIndex--;
       });
-      _loadSong();
-      _playPause();
+    } else {
+      currentIndex = widget.songList.length - 1;
     }
+    _loadSong();
+    _playPause();
   }
 
   @override
