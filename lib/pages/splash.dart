@@ -35,7 +35,6 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
         ),
       );
-      debugPrint(loginEmail);
     } else if (signupEmail != null && mounted) {
       Navigator.pushReplacement(
         context,
@@ -45,7 +44,6 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
         ),
       );
-      debugPrint(signupEmail);
     }
   }
 

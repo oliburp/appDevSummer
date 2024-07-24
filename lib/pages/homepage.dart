@@ -11,21 +11,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
-  Future<void> signOut() async {
-    FirebaseAuth.instance.signOut();
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('loginEmail');
-    await prefs.remove('signupEmail');
-    showToast('Logged out successfully');
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const MyLogin(),
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,42 +27,34 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.transparent,
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          MyButton(
-            height: 40,
-            text: 'Logout',
-            onTap: signOut,
-          ),
-          Text(
-            widget.email,
-            style: const TextStyle(color: Color.fromARGB(255, 5, 236, 143)),
-          ),
-        ],
-      ),
+      body: <Widget>[
+        const MyHome(),
+        const MyFavorites(),
+        MyUser(email: widget.email,),
+      ][currentPageIndex],
       bottomNavigationBar: BottomNavigationBarTheme(
         data: const BottomNavigationBarThemeData(
           backgroundColor: Colors.transparent,
           selectedLabelStyle: TextStyle(color:  Color.fromARGB(255, 5, 236, 143)),
           selectedItemColor: Color.fromARGB(255, 5, 236, 143)
         ),
-        child: NavigationBar(
-          onDestinationSelected: (int index) {
+        child: BottomNavigationBar(
+          onTap: (int index) {
             setState(() {
               currentPageIndex = index;
             });
           },
-          selectedIndex: currentPageIndex,
-          destinations: const [
-            NavigationDestination(
+          currentIndex: currentPageIndex,
+          items: const [
+            BottomNavigationBarItem(
               icon: Icon(Icons.home_filled),
               label: 'Home',
             ),
-            NavigationDestination(
+            BottomNavigationBarItem(
               icon: Icon(Icons.favorite),
               label: 'Favorites',
             ),
-            NavigationDestination(
+            BottomNavigationBarItem(
               icon: Icon(Icons.person),
               label: 'Me',
             ),

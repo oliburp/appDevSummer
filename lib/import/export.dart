@@ -11,3 +11,6 @@ export '/pages/splash.dart';
 export '/pages/login.dart';
 export '/pages/signup.dart';
 export '/widgets/widgets.dart';
+export '/pages/homepage/home.dart';
+export '/pages/homepage/favorite.dart';
+export '/pages/homepage/user.dart';
