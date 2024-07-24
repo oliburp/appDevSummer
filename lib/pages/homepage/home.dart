@@ -59,12 +59,6 @@ class _MyHomeState extends State<MyHome> {
                   onPressed: () {
                     toggleFavorite(song[0]);
                     favoriteList.add(songList[index]);
-                    // setState(() {
-                    //   iconColors[index] = iconColors[index] ==
-                    //           const Color.fromARGB(75, 255, 255, 255)
-                    //       ? const Color.fromARGB(255, 5, 236, 143)
-                    //       : const Color.fromARGB(75, 255, 255, 255);
-                    // });
                   },
                   icon: Icon(
                     isFavorite ? Icons.favorite : Icons.favorite_border,
@@ -73,6 +67,17 @@ class _MyHomeState extends State<MyHome> {
                         : null,
                   ),
                 ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyPlayer(
+                            song: song[0],
+                            artist: song[1],
+                            img: song[2],
+                            route: song[3])),
+                  );
+                },
               ),
             );
           }),
