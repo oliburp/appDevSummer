@@ -1,17 +1,69 @@
 import '/import/export.dart';
 
-class MyPlayer extends StatelessWidget {
-  const MyPlayer(
-      {super.key,
-      required this.song,
-      required this.artist,
-      required this.img,
-      required this.route});
+class MyPlayer extends StatefulWidget {
+  const MyPlayer({
+    Key? key,
+    required this.song,
+    required this.artist,
+    required this.img,
+    required this.route,
+  }) : super(key: key);
 
   final String song;
   final String artist;
   final String img;
   final String route;
+
+  @override
+  State<MyPlayer> createState() => _MyPlayerState();
+}
+
+class _MyPlayerState extends State<MyPlayer> {
+  late AudioPlayer _audioPlayer;
+  bool isPlaying = false;
+  Duration duration = Duration.zero;
+  Duration position = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayer = AudioPlayer();
+    _audioPlayer.onDurationChanged.listen((d) {
+      setState(() {
+        duration = d;
+      });
+    });
+    _audioPlayer.onPositionChanged.listen((p) {
+      setState(() {
+        position = p;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+
+  void playPause() async {
+    if (isPlaying) {
+      await _audioPlayer.pause();
+    } else {
+      await _audioPlayer.play(AssetSource(widget.route.substring(7)));
+    }
+    setState(() {
+      isPlaying = !isPlaying;
+    });
+  }
+
+  void stop() async {
+    await _audioPlayer.stop();
+    setState(() {
+      isPlaying = false;
+      position = Duration.zero;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,15 +106,15 @@ class MyPlayer extends StatelessWidget {
                           bottomLeft: Radius.circular(4),
                           bottomRight: Radius.circular(4),
                         ),
-                        child: Image.asset(img,
+                        child: Image.asset(widget.img,
                             width: double.infinity, fit: BoxFit.fill),
                       ),
                       ListTile(
-                        title: Text(song,
+                        title: Text(widget.song,
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold)),
-                        subtitle: Text(artist),
+                        subtitle: Text(widget.artist),
                         trailing: const Icon(Icons.favorite_border),
                       ),
                     ],
@@ -72,11 +124,12 @@ class MyPlayer extends StatelessWidget {
               const SizedBox(
                 height: 15,
               ),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Text(
-                    '0:00',
-                    style: TextStyle(color: Colors.white),
+                  Text(
+                    formatTime(position),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   SliderTheme(
                     data: const SliderThemeData(
@@ -85,11 +138,19 @@ class MyPlayer extends StatelessWidget {
                         activeTrackColor: Color.fromARGB(150, 5, 236, 143),
                         inactiveTrackColor: Color.fromARGB(100, 0, 0, 0)),
                     child: Slider(
-                        min: 0, max: 100, value: 50, onChanged: (value) {}),
+                      min: 0,
+                      max: duration.inSeconds.toDouble(),
+                      value: position.inSeconds.toDouble(),
+                      onChanged: (value) async {
+                        final position = Duration(seconds: value.toInt());
+                        await _audioPlayer.seek(position);
+                        await _audioPlayer.resume();
+                      },
+                    ),
                   ),
-                  const Text(
-                    '0:00',
-                    style: TextStyle(color: Colors.white),
+                  Text(
+                    formatTime(duration),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ],
               ),
@@ -100,14 +161,21 @@ class MyPlayer extends StatelessWidget {
                   MyPlayerButtons(
                     width: 70,
                     icon: Icons.skip_previous,
+                    onPressed: () {
+                      // Add functionality for skipping to the previous track
+                    },
                   ),
                   MyPlayerButtons(
                     width: 150,
-                    icon: Icons.play_arrow,
+                    icon: isPlaying ? Icons.pause : Icons.play_arrow,
+                    onPressed: playPause,
                   ),
                   MyPlayerButtons(
                     width: 70,
                     icon: Icons.skip_next,
+                    onPressed: () {
+                      // Add functionality for skipping to the next track
+                    },
                   ),
                 ],
               ),
@@ -117,4 +185,17 @@ class MyPlayer extends StatelessWidget {
       ),
     );
   }
+
+  String formatTime(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = twoDigits(duration.inHours);
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return [
+      if (duration.inHours > 0) hours,
+      minutes,
+      seconds,
+    ].join(':');
+  }
 }
+

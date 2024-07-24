@@ -3,7 +3,7 @@ final List<List> songList = [
       'Lagi',
       'BINI',
       'assets/cover/lagi.jpg',
-      'assets/audio/BINI-lagi.mp3',
+      'assets/audio/BINI-Lagi.mp3',
     ],
     [
       'Salamin, Salamin',

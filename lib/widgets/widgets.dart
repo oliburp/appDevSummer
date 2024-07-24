@@ -158,21 +158,59 @@ class MyButton extends StatelessWidget {
   }
 }
 
-class MyPlayerButtons extends StatefulWidget {
-  MyPlayerButtons({super.key, this.width = 70, required this.icon});
+class MyPlayerButtons extends StatelessWidget {
+  const MyPlayerButtons({
+    Key? key,
+    required this.width,
+    required this.icon,
+    required this.onPressed,
+  }) : super(key: key);
 
-  double width;
-  IconData icon;
+  final double width;
+  final IconData icon;
+  final VoidCallback onPressed;
 
-  @override
-  State<MyPlayerButtons> createState() => _MyPlayerButtonsState();
-}
-
-class _MyPlayerButtonsState extends State<MyPlayerButtons> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onPressed,
+      child: Container(
+        width: width,
+        height: 70,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 24, 28, 24),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color.fromARGB(100, 5, 236, 143)),
+          boxShadow: const [
+            BoxShadow(
+              color: Color.fromARGB(100, 2, 126, 76),
+              blurRadius: 15,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Icon(icon, color: const Color.fromARGB(255, 5, 236, 143)),
+      ),
+    );
+  }
+}
+
+class dMyPlayerButtons extends StatefulWidget {
+  dMyPlayerButtons({super.key, this.width = 70, required this.icon, required this.onTap});
+
+  double width;
+  IconData icon;
+  VoidCallback onTap;
+
+  @override
+  State<dMyPlayerButtons> createState() => _dMyPlayerButtonsState();
+}
+
+class _dMyPlayerButtonsState extends State<dMyPlayerButtons> {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onTap,
       child: Container(
           alignment: Alignment.center,
           height: 70,
