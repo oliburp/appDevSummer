@@ -38,6 +38,7 @@ class _MyPlayerState extends State<MyPlayer> {
         position = p;
       });
     });
+    loadFavorites();
   }
 
   @override
@@ -63,6 +64,25 @@ class _MyPlayerState extends State<MyPlayer> {
       isPlaying = false;
       position = Duration.zero;
     });
+  }
+
+  void loadFavorites() async {
+    List<String> favorites = await SharedPrefs.loadFavorites();
+    setState(() {
+      favoriteList =
+          songList.where((song) => favorites.contains(song[0])).toList();
+    });
+  }
+
+  void toggleFavorite(String songTitle) async {
+    List<String> favorites = await SharedPrefs.loadFavorites();
+    if (favorites.contains(songTitle)) {
+      favorites.remove(songTitle);
+    } else {
+      favorites.add(songTitle);
+    }
+    SharedPrefs.saveFavorites(favorites);
+    loadFavorites(); // Reload favorites to update the UI
   }
 
   @override
@@ -115,7 +135,6 @@ class _MyPlayerState extends State<MyPlayer> {
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold)),
                         subtitle: Text(widget.artist),
-                        trailing: const Icon(Icons.favorite_border),
                       ),
                     ],
                   ),
@@ -198,4 +217,3 @@ class _MyPlayerState extends State<MyPlayer> {
     ].join(':');
   }
 }
-

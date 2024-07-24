@@ -8,7 +8,6 @@ class MyFavorites extends StatefulWidget {
 }
 
 class _MyFavoritesState extends State<MyFavorites> {
-
   @override
   void initState() {
     super.initState();
@@ -67,6 +66,17 @@ class _MyFavoritesState extends State<MyFavorites> {
                           Icons.favorite,
                           color: Color.fromARGB(255, 5, 236, 143),
                         )),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MyPlayer(
+                                song: song[0],
+                                artist: song[1],
+                                img: song[2],
+                                route: song[3])),
+                      );
+                    },
                   ),
                 );
               }),
