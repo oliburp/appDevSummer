@@ -49,16 +49,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color.fromARGB(255, 24, 28, 24),
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 24, 28, 24),
       body: Center(
-          child: Text(
-        'Patogtog',
-        style: TextStyle(
-            color: Color.fromARGB(255, 5, 236, 143),
-            fontSize: 32,
-            fontWeight: FontWeight.bold),
-      )),
+          child: SizedBox(child: Image.asset('assets/logo/logoLabel.png'),)),
     );
   }
 }
