@@ -52,7 +52,9 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 24, 28, 24),
       body: Center(
-          child: SizedBox(child: Image.asset('assets/logo/logoLabel.png'),)),
+          child: SizedBox(
+            height: 250,
+            child: Image.asset('assets/logo/logoLabel.png'),)),
     );
   }
 }
