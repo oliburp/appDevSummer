@@ -52,9 +52,21 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 24, 28, 24),
       body: Center(
-          child: SizedBox(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
             height: 250,
-            child: Image.asset('assets/logo/logoLabel.png'),)),
+            child: Image.asset('assets/logo/logoLabel.png'),
+          ),
+          const SizedBox(height: 18),
+          const SizedBox(
+              height: 40,
+              width: 40,
+              child: CircularProgressIndicator(
+                  color: Color.fromARGB(255, 5, 236, 143))),
+        ],
+      )),
     );
   }
 }
